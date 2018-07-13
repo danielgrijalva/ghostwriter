@@ -15,9 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from stories.views import upper
+from stories.views import get_suggestions
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('upper/', upper),
+    path('ghostwriter/', get_suggestions),
 ]
