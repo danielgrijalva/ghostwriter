@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from stories.views import upper
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('upper/', upper),
 ]
