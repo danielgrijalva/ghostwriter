@@ -19,6 +19,8 @@ class Command(BaseCommand):
             owner_screen_name=settings.LIST_OWNER,
             slug=settings.LIST_NAME,
             tweet_mode='extended',
+            include_rts=False,
+            count=22, # for some reason it returns n-2
         )
 
         # evaluate each tweet and save to db
@@ -28,7 +30,6 @@ class Command(BaseCommand):
                 if (    not tweet.get('entities').get('media')
                     and not tweet['entities']['user_mentions']
                     and not tweet['is_quote_status']
-                    and not tweet.get('retweeted_status')
                     and not tweet['in_reply_to_status_id']):
 
                     new = Tweet(
