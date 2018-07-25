@@ -1,3 +1,3 @@
-# Word-level language modeling RNN
+# Word-level language modeling with recurrent neural networks and LSTMs
 
-Heavily based on [PyTorch's example](https://github.com/pytorch/examples/tree/master/word_language_model)
+Heavily based on [textgenrnn](https://github.com/minimaxir/textgenrnn/pull/52) and its [interactive mode](https://github.com/minimaxir/textgenrnn/pull/52)

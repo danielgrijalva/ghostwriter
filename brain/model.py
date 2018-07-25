@@ -1,57 +1,91 @@
-import torch.nn as nn
+from keras.optimizers import RMSprop
+from keras.layers import Input, Embedding, Dense, LSTM, Bidirectional
+from keras.layers import CuDNNLSTM, concatenate, Reshape, SpatialDropout1D
+from keras.models import Model
+from keras import backend as K
+from .AttentionWeightedAverage import AttentionWeightedAverage
 
-class RNNModel(nn.Module):
-    """Container module with an encoder, a recurrent module, and a decoder."""
 
-    def __init__(self, rnn_type, ntoken, ninp, nhid, nlayers, dropout=0.5, tie_weights=False):
-        super(RNNModel, self).__init__()
-        self.drop = nn.Dropout(dropout)
-        self.encoder = nn.Embedding(ntoken, ninp)
-        if rnn_type in ['LSTM', 'GRU']:
-            self.rnn = getattr(nn, rnn_type)(ninp, nhid, nlayers, dropout=dropout)
-        else:
-            try:
-                nonlinearity = {'RNN_TANH': 'tanh', 'RNN_RELU': 'relu'}[rnn_type]
-            except KeyError:
-                raise ValueError( """An invalid option for `--model` was supplied,
-                                 options are ['LSTM', 'GRU', 'RNN_TANH' or 'RNN_RELU']""")
-            self.rnn = nn.RNN(ninp, nhid, nlayers, nonlinearity=nonlinearity, dropout=dropout)
-        self.decoder = nn.Linear(nhid, ntoken)
+def textgenrnn_model(num_classes, cfg, context_size=None,
+                     weights_path=None,
+                     dropout=0.0,
+                     optimizer=RMSprop(lr=4e-3, rho=0.99)):
+    '''
+    Builds the model architecture for textgenrnn and
+    loads the specified weights for the model.
+    '''
 
-        # Optionally tie weights as in:
-        # "Using the Output Embedding to Improve Language Models" (Press & Wolf 2016)
-        # https://arxiv.org/abs/1608.05859
-        # and
-        # "Tying Word Vectors and Word Classifiers: A Loss Framework for Language Modeling" (Inan et al. 2016)
-        # https://arxiv.org/abs/1611.01462
-        if tie_weights:
-            if nhid != ninp:
-                raise ValueError('When using the tied flag, nhid must be equal to emsize')
-            self.decoder.weight = self.encoder.weight
+    input = Input(shape=(cfg['max_length'],), name='input')
+    embedded = Embedding(num_classes, cfg['dim_embeddings'],
+                         input_length=cfg['max_length'],
+                         name='embedding')(input)
 
-        self.init_weights()
+    if dropout > 0.0:
+        embedded = SpatialDropout1D(dropout, name='dropout')(embedded)
 
-        self.rnn_type = rnn_type
-        self.nhid = nhid
-        self.nlayers = nlayers
+    rnn_layer_list = []
+    for i in range(cfg['rnn_layers']):
+        prev_layer = embedded if i is 0 else rnn_layer_list[-1]
+        rnn_layer_list.append(new_rnn(cfg, i+1)(prev_layer))
 
-    def init_weights(self):
-        initrange = 0.1
-        self.encoder.weight.data.uniform_(-initrange, initrange)
-        self.decoder.bias.data.zero_()
-        self.decoder.weight.data.uniform_(-initrange, initrange)
+    seq_concat = concatenate([embedded] + rnn_layer_list, name='rnn_concat')
+    attention = AttentionWeightedAverage(name='attention')(seq_concat)
+    output = Dense(num_classes, name='output', activation='softmax')(attention)
 
-    def forward(self, input, hidden):
-        emb = self.drop(self.encoder(input))
-        output, hidden = self.rnn(emb, hidden)
-        output = self.drop(output)
-        decoded = self.decoder(output.view(output.size(0)*output.size(1), output.size(2)))
-        return decoded.view(output.size(0), output.size(1), decoded.size(1)), hidden
+    if context_size is None:
+        model = Model(inputs=[input], outputs=[output])
+        if weights_path is not None:
+            model.load_weights(weights_path, by_name=True)
+        model.compile(loss='categorical_crossentropy', optimizer=optimizer)
 
-    def init_hidden(self, bsz):
-        weight = next(self.parameters())
-        if self.rnn_type == 'LSTM':
-            return (weight.new_zeros(self.nlayers, bsz, self.nhid),
-                    weight.new_zeros(self.nlayers, bsz, self.nhid))
-        else:
-            return weight.new_zeros(self.nlayers, bsz, self.nhid)
+    else:
+        context_input = Input(
+            shape=(context_size,), name='context_input')
+        context_reshape = Reshape((context_size,),
+                                  name='context_reshape')(context_input)
+        merged = concatenate([attention, context_reshape], name='concat')
+        main_output = Dense(num_classes, name='context_output',
+                            activation='softmax')(merged)
+
+        model = Model(inputs=[input, context_input],
+                      outputs=[main_output, output])
+        if weights_path is not None:
+            model.load_weights(weights_path, by_name=True)
+        model.compile(loss='categorical_crossentropy', optimizer=optimizer,
+                      loss_weights=[0.8, 0.2])
+
+    return model
+
+
+'''
+Create a new LSTM layer per parameters. Unfortunately,
+each combination of parameters must be hardcoded.
+
+The normal LSTMs use sigmoid recurrent activations
+for parity with CuDNNLSTM:
+https://github.com/keras-team/keras/issues/8860
+'''
+
+
+def new_rnn(cfg, layer_num):
+    has_gpu = len(K.tensorflow_backend._get_available_gpus()) > 0
+    if has_gpu:
+        if cfg['rnn_bidirectional']:
+            return Bidirectional(CuDNNLSTM(cfg['rnn_size'],
+                                           return_sequences=True),
+                                 name='rnn_{}'.format(layer_num))
+
+        return CuDNNLSTM(cfg['rnn_size'],
+                         return_sequences=True,
+                         name='rnn_{}'.format(layer_num))
+    else:
+        if cfg['rnn_bidirectional']:
+            return Bidirectional(LSTM(cfg['rnn_size'],
+                                      return_sequences=True,
+                                      recurrent_activation='sigmoid'),
+                                 name='rnn_{}'.format(layer_num))
+
+        return LSTM(cfg['rnn_size'],
+                    return_sequences=True,
+                    recurrent_activation='sigmoid',
+                    name='rnn_{}'.format(layer_num))
