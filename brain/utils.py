@@ -16,7 +16,11 @@ def textgenrnn_sample(preds, temperature, top_n=3):
     preds = exp_preds / np.sum(exp_preds)
     
     index = (-preds).argsort()[:top_n]
-
+    
+    # avoid leaks by closing the session after making predictions
+    # https://stackoverflow.com/a/50377181
+    K.clear_session()
+    
     return index
 
 
@@ -26,8 +30,8 @@ def textgenrnn_generate(model, vocab, indices_char, temperature,
     Generates and returns a single text.
     '''
 
-    text = [meta_token] + [meta_token]
-    next_word = ''
+    text = [meta_token, meta_token]    
+    next_word = None
 
     if model_input_count(model) > 1:
         model = Model(inputs=model.input[0], outputs=model.output[1])
