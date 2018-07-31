@@ -1,18 +1,27 @@
 <template>
-  <div class="ghostwriter">
-    <h1>Ghostwriter</h1>
-     <div class="form-group">
-      <textarea class="form-control" id="story" rows="3" v-model="story" @input="getSuggestions"></textarea>
-      <div class="suggestions-container" v-if="suggestions">
-        <div class="suggestions-results" aria-labelledby="autosuggest">
-          <ul role="listbox" aria-labelledby="autosuggest">
-            <li v-for="s in suggestions" class="suggestions-results-item">
-              {{ s }}
-            </li>
-          </ul>
-        </div>
-      </div>  
-    </div> 
+  <div class="row">
+    <div class="col">
+      <div class="ghostwriter">
+        <h1>Ghostwriter</h1>
+
+        <!-- story -->
+        <blockquote class="blockquote text-center">
+          <p v-model="story" class="mb-0">{{ story }}</p>
+          <footer class="blockquote-footer">A Recurrent Neural Network</footer>
+        </blockquote>
+
+        <!-- suggestions -->
+        <div class="suggestions-container" v-if="suggestions">
+          <div class="suggestions-results" aria-labelledby="autosuggest">
+            <ul role="listbox" aria-labelledby="autosuggest">
+              <li v-for="s in suggestions" v-on:click="buildStory(s)" class="suggestions-results-item">
+                {{ s }}
+              </li>
+            </ul>
+          </div>
+        </div> 
+      </div>
+    </div>
   </div>
 </template>
 
@@ -22,21 +31,46 @@
     name: "Ghostwriter",
     data() {
       return {
-        story: null,
+        nextWord: '',
+        story: '',
         suggestions: null,
       };
     },
+    created: function (){
+      this.getSuggestions(this.nextWord, this.story)
+    },
     methods: {
-      getSuggestions() {
-        let words = this.story.split(' ')
+      getSuggestions(nextWord, story) {
         axios
           .get("http://127.0.0.1:8000/ghostwriter/", {
             params: {
-              text: words[words.length-1]
+              nextWord: nextWord,
+              story: story
             }
           })
-          .then(response => (this.suggestions = response.data.result));
-      }
+          .then(response => (this.suggestions = response.data.suggestions));
+      },
+      buildStory(word){
+        if (word != '<end>'){
+          this.nextWord = word;
+          
+          // raw words and characters separated by spaces,
+          // used by the algorithm to do inference
+          var raw = (this.story + ' ' + word).trim().trim('<end>')
+
+          // more human-readable story, for user presentation
+          // capitalize first letter, trim spaces between symbols, etc
+          var edit = raw[0].toUpperCase() + raw.substring(1)
+          this.story = edit
+
+          this.getSuggestions(this.nextWord, raw)
+        }else{
+          // user selected META_TOKEN (<end> of string).
+          // usually, META_TOKEN gets suggested when the
+          // story should end.
+          this.suggestions = null;
+        }
+      },
     }
   };
 </script>
@@ -48,7 +82,7 @@
   }
 
   body {
-    max-width: 800px;
+    max-width: 100%;
     padding: 20px;
     margin-left: auto !important;
     margin-right: auto !important;
@@ -56,7 +90,8 @@
 
   .suggestions-container {
     position: relative;
-    width: 100%;
+    margin: auto;
+    max-width: 500px;
   }
   
   .suggestions-results {
@@ -66,8 +101,7 @@
     z-index: 10000001;
     width: 100%;
     border: 1px solid #e0e0e0;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
+    border-radius: 4px;
     background: white;
     padding: 0px;
   }
