@@ -24,21 +24,23 @@ def textgenrnn_sample(preds, temperature, top_n=3):
     return index
 
 
-def textgenrnn_generate(model, vocab, indices_char, temperature,
-                        maxlen, meta_token,max_gen_length, top_n):
+def textgenrnn_generate(model, vocab, indices_char, temperature, maxlen,
+                        meta_token, max_gen_length, top_n, story, next_word):
     '''
     Generates and returns a single text.
     '''
 
-    text = [meta_token, meta_token]    
-    next_word = None
+    if story:
+        story = story.split()
+    else:
+        story = [meta_token, meta_token]
 
     if model_input_count(model) > 1:
         model = Model(inputs=model.input[0], outputs=model.output[1])
 
-    while next_word != meta_token and len(text) < max_gen_length:
+    while next_word != meta_token and len(story) < max_gen_length:
         encoded_text = textgenrnn_encode_sequence(
-            text[-maxlen:],
+            story[-maxlen:],
             vocab,
             maxlen
         )

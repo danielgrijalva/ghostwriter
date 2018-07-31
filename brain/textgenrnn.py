@@ -2,13 +2,14 @@ from keras.preprocessing.text import Tokenizer
 import numpy as np
 import json
 from pkg_resources import resource_filename
+from django.conf import settings
 from brain.utils import *
 from brain.model import textgenrnn_model
 import re
 
 
 class textgenrnn:
-    META_TOKEN = '<s>'
+    META_TOKEN = settings.META_TOKEN
     config = {}
 
     def __init__(self, weights_path=None,
@@ -44,7 +45,7 @@ class textgenrnn:
                                       weights_path=weights_path)
 
 
-    def generate(self, temperature, max_gen_length, top_n):
+    def generate(self, temperature, max_gen_length, top_n, story, next_word):
         gen_text = textgenrnn_generate(self.model,
                                         self.vocab,
                                         self.indices_char,
@@ -52,6 +53,8 @@ class textgenrnn:
                                         self.config['max_length'],
                                         self.META_TOKEN,
                                         max_gen_length,
-                                        top_n)
+                                        top_n,
+                                        story,
+                                        next_word)
 
         return gen_text
