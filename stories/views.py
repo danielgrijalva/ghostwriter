@@ -18,7 +18,7 @@ def get_suggestions(request):
 
     params = {
         'max_gen_length': 280,
-        'top_n': 5,
+        'top_n': int(request.query_params.get('topN')),
         'temperature': 2,
         'story': story,
         'next_word': next_word,
