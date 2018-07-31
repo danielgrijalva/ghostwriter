@@ -139,3 +139,7 @@ ACCESS_TOKEN = config('ACCESS_TOKEN')
 ACCESS_TOKEN_SECRET = config('ACCESS_TOKEN_SECRET')
 LIST_OWNER = config('LIST_OWNER')
 LIST_NAME = config('LIST_NAME')
+
+# textgenrnn
+
+META_TOKEN = '<end>'
