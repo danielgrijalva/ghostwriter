@@ -8,15 +8,15 @@
           <!-- story -->
           <blockquote class="blockquote text-center">
             <p v-model="story" class="mb-0">{{ story }}</p>
-            <footer class="blockquote-footer">{{ author }}</footer>
+            <footer v-if="story" class="blockquote-footer">{{ author }}</footer>
           </blockquote>
 
           <!-- suggestions -->
           <div class="suggestions-container" v-if="suggestions">
             <div class="suggestions-results" aria-labelledby="autosuggest">
               <ul role="listbox" aria-labelledby="autosuggest">
-                <li v-for="s in suggestions" v-on:click="buildStory(s)" class="suggestions-results-item">
-                  {{ s }}
+                <li v-for="word in suggestions" v-on:click="buildStory(word)" class="suggestions-results-item">
+                  {{ word }}
                 </li>
               </ul>
             </div>
@@ -43,6 +43,7 @@
       return {
         nextWord: '',
         story: '',
+        rawStory: '',
         suggestions: null,
         topN: 5,
         topNShow: 5,
@@ -50,7 +51,13 @@
       };
     },
     created: function (){
-      this.getSuggestions()
+      var vm = this;
+      this.getSuggestions();
+      window.addEventListener('keydown', function(event) {
+        if (event.keyCode == 8 && vm.story) { 
+          vm.removeWord();
+        }
+      });      
     },
     methods: {
       getSuggestions() {
@@ -59,81 +66,49 @@
             params: {
               topN: this.topN,
               nextWord: this.nextWord,
-              story: this.story
+              story: this.rawStory
             }
           })
           .then(response => (this.suggestions = response.data.suggestions));
       },
       buildStory(word){
-        if (word != '<end>'){
+        if (word != '<s>'){
           this.nextWord = word;
-          
           // raw words and characters separated by spaces,
           // used by the algorithm to do inference
-          var raw = (this.story + ' ' + word).trim().trim('<end>')
+          this.rawStory = (this.rawStory + ' ' + word).trim();
+          this.getSuggestions();
 
           // more human-readable story, for user presentation
           // capitalize first letter, trim spaces between symbols, etc
-          var edit = raw[0].toUpperCase() + raw.substring(1)
-          this.story = edit
-
-          this.getSuggestions(this.nextWord, raw)
-        }else{
+          this.formatStory();
+        } else {
           // user selected META_TOKEN (<end> of string).
-          // usually, META_TOKEN gets suggested when the
-          // story should end.
+          // META_TOKEN usually gets suggested when the story should end.
           this.suggestions = null;
         }
+      },
+      formatStory(){
+        this.story = this.rawStory[0].toUpperCase() + this.rawStory.substring(1);
+      },
+      removeWord(){
+        var words = this.rawStory.split(' ');
+        words.pop();
+
+        if (words.length == 0) {
+          this.reset();
+        } else {
+          this.rawStory = words.join(' ');
+          this.formatStory();
+        }
+
+        this.getSuggestions();
+      },
+      reset(){
+        this.nextWord = '';
+        this.rawStory = '';
+        this.story = '';
       },
     }
   };
 </script>
-
-<style>
-  body {
-    max-width: 100%;
-    padding: 20px;
-    margin-left: auto !important;
-    margin-right: auto !important;
-  }
-
-  .suggestions-container {
-    position: relative;
-    margin: auto;
-    max-width: 500px;
-  }
-  
-  .suggestions-results {
-    font-weight: 300;
-    margin: 0;
-    position: absolute;
-    z-index: 10000001;
-    width: 100%;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    background: white;
-    padding: 0px;
-  }
-  
-  .suggestions-results ul {
-    list-style: none;
-    padding-left: 0;
-    margin: 0;
-  }
-  
-  .suggestions-results .suggestions-results-item {
-    cursor: pointer;
-    padding: 15px;
-  }
-  
-  .suggestions-results .suggestions-results-item:active,
-  .suggestions-results .suggestions-results-item:hover,
-  .suggestions-results .suggestions-results-item:focus {
-    background-color: #ddd;
-  }
-
-  .form-control:focus {
-    border-color: #ced4da;
-    box-shadow: none;
-  }
-</style>
