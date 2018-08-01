@@ -1,8 +1,8 @@
-body {
+  body {
     max-width: 100%;
-    padding: 20px;
     margin-left: auto !important;
     margin-right: auto !important;
+    overflow-x: hidden;
   }
 
   .suggestions-container {
@@ -43,4 +43,72 @@ body {
   .form-control:focus {
     border-color: #ced4da;
     box-shadow: none;
+  }
+
+  .toggleOptions {
+    color: #999;
+    left: 0 !important;
+    margin-left: 0 !important;
+  }
+
+  #app {
+    margin-top: 0 !important;
+  }
+
+  #wrapper {
+    padding-left: 0;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+  }
+
+  #wrapper.toggled {
+    padding-left: 250px;
+  }
+
+  #sidebar-wrapper {
+    z-index: 1000;
+    position: fixed;
+    left: 250px;
+    width: 0;
+    height: 100%;
+    margin-left: -250px;
+    overflow-y: auto;
+    background: #000;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+    color: #999;
+    font-family: "Segoe UI";
+  }
+
+  #wrapper.toggled #sidebar-wrapper {
+    width: 250px;
+  }
+
+  #page-content-wrapper {
+    width: 100%;
+    position: absolute;
+    padding: 15px;
+  }
+  
+  #wrapper.toggled #page-content-wrapper {
+    position: absolute;
+    margin-right: -250px;
+  }
+
+  .sidebar-nav {
+    position: absolute;
+    top: 0;
+    width: 250px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  
+  .sidebar-nav li {
+    text-indent:0;
+    padding: 20px;
   }

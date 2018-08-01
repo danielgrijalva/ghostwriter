@@ -1,8 +1,15 @@
 <template>
-  <div>
-    <div class="row">
-      <div class="col">
-        <div class="ghostwriter">
+  <div id="wrapper" v-bind:class="{ toggled: options }">
+    <div id="page-content-wrapper">
+      <div class="row  page-content-wrapper ghostwriter">        
+        <div class="col-sm-1 text-left">
+          <button class="btn btn-lg btn-link toggleOptions" v-on:click="toggleOptions">
+            <i class="fas fa-cog"></i>
+          </button>
+        </div>
+
+        <div class="col-sm-11 text-center">
+          <!-- <img class="img-fluid" width="200px" src="../assets/logo.png"> -->
           <h1>Ghostwriter</h1>
 
           <!-- story -->
@@ -24,13 +31,18 @@
         </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-sm-3">
-        <label for="topN" >Number of suggestions ({{ topNShow }})</label>
-        <input type="range" v-model.lazy="topN" v-model="topNShow" v-on:change="getSuggestions" class="custom-range" min="1" max="10" value="5" step="1">
-        <label for="topN" >Change author</label>
-        <input type="text" v-model="author" class="form-control mb-2" id="author" placeholder="A Recurrent Neural Network">        
-      </div>
+    <div id="sidebar-wrapper">
+      <ul class="sidebar-nav">
+        <li>
+          <label for="topN" >Number of suggestions ({{ topNShow }})</label>
+          <input type="range" v-model.lazy="topN" v-model="topNShow" v-on:change="getSuggestions" class="custom-range" min="1" max="10" value="5" step="1">          
+        </li>
+        <hr>
+        <li>
+          <label for="topN" >Change author</label>
+          <input type="text" v-model="author" class="form-control mb-2" id="author" placeholder="A Recurrent Neural Network">           
+        </li>
+      </ul>       
     </div>
   </div>
 </template>
@@ -41,6 +53,7 @@
     name: "Ghostwriter",
     data() {
       return {
+        options: false,
         nextWord: '',
         story: '',
         rawStory: '',
@@ -108,6 +121,9 @@
         this.nextWord = '';
         this.rawStory = '';
         this.story = '';
+      },
+      toggleOptions(){
+        this.options = !this.options;
       },
     }
   };
