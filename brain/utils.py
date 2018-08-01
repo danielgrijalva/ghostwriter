@@ -3,29 +3,32 @@ from keras.preprocessing import sequence
 from keras import backend as K
 import numpy as np
 import re
+from pprint import pprint
 
-
-def textgenrnn_sample(preds, temperature, top_n=3):
+def textgenrnn_sample(preds, top_n=3, random=False):
     '''
     Samples predicted probabilities of the next word.
     '''
 
     preds = np.asarray(preds).astype('float64')
-    preds = np.log(preds + K.epsilon()) / temperature
+    preds = np.log(preds + K.epsilon())
     exp_preds = np.exp(preds)
     preds = exp_preds / np.sum(exp_preds)
-    
-    index = (-preds).argsort()[:top_n]
-    
+
+    if random:
+        index = np.random.randint(len(preds) + 1, size=top_n)
+    else:
+        index = (-preds).argsort()[:top_n]
+
     # avoid leaks by closing the session after making predictions
     # https://stackoverflow.com/a/50377181
     K.clear_session()
     
     return index
 
-
-def textgenrnn_generate(model, vocab, indices_char, temperature, maxlen,
-                        meta_token, max_gen_length, top_n, story, next_word):
+ 
+def textgenrnn_generate(model, vocab, indices_char, maxlen, meta_token, 
+                        max_gen_length, random, top_n, story, next_word):
     '''
     Generates and returns a single text.
     '''
@@ -48,7 +51,6 @@ def textgenrnn_generate(model, vocab, indices_char, temperature, maxlen,
         # get indexes of top n options
         options_index = textgenrnn_sample(
             model.predict(encoded_text, batch_size=1)[0],
-            temperature,
             top_n=top_n
         )
 
