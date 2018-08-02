@@ -1,14 +1,14 @@
 <template>
   <div id="wrapper" v-bind:class="{ toggled: options }">
     <div id="page-content-wrapper">
-      <div class="row  page-content-wrapper ghostwriter">        
-        <div class="col-sm-1 text-left">
+      <div class="row ghostwriter">        
+        <div class="" id="toggleOptions">
           <button class="btn btn-lg btn-link toggleOptions" v-on:click="toggleOptions">
             <i class="fas fa-cog"></i>
           </button>
         </div>
 
-        <div class="col-sm-11 text-center">
+        <div class="col text-center">
           <!-- <img class="img-fluid" width="200px" src="../assets/logo.png"> -->
           <h1>Ghostwriter</h1>
 
@@ -25,6 +25,14 @@
                 <li v-for="word in suggestions" v-on:click="buildStory(word)" class="suggestions-results-item">
                   {{ word }}
                 </li>
+                <li>
+                  <div class="input-group m-2"  style="max-width: 97%;">
+                    <input @focus="toggleFocus" @blur="toggleFocus" type="text" class="form-control" v-model="customWord" placeholder="Other...">
+                    <div class="input-group-append">
+                      <button class="btn btn-outline-gray" type="button" v-on:click="buildStory(customWord)" id="button-addon2"><i class="fas fa-angle-right"></i></button>
+                    </div>
+                  </div>
+                </li>
               </ul>
             </div>
           </div>
@@ -34,13 +42,13 @@
     <div id="sidebar-wrapper">
       <ul class="sidebar-nav">
         <li>
-          <label for="topN" >Number of suggestions ({{ topNShow }})</label>
+          <label for="topN">Number of suggestions ({{ topNShow }})</label>
           <input type="range" v-model.lazy="topN" v-model="topNShow" v-on:change="getSuggestions" class="custom-range" min="1" max="10" value="5" step="1">          
         </li>
         <hr>
         <li>
-          <label for="topN" >Change author</label>
-          <input type="text" v-model="author" class="form-control mb-2" id="author" placeholder="A Recurrent Neural Network">           
+          <label for="topN">Change author</label>
+          <input @focus="toggleFocus" @blur="toggleFocus" type="text" v-model="author" class="form-control mb-2" id="author" placeholder="A Recurrent Neural Network">           
         </li>
       </ul>       
     </div>
@@ -54,7 +62,9 @@
     data() {
       return {
         options: false,
+        focused: false,
         nextWord: '',
+        customWord: '',
         story: '',
         rawStory: '',
         suggestions: null,
@@ -66,11 +76,12 @@
     created: function (){
       var vm = this;
       this.getSuggestions();
+
       window.addEventListener('keydown', function(event) {
-        if (event.keyCode == 8 && vm.story) { 
+        if (event.keyCode == 8 && vm.story && vm.focused == false) { 
           vm.removeWord();
         }
-      });      
+      });
     },
     methods: {
       getSuggestions() {
@@ -124,6 +135,10 @@
       },
       toggleOptions(){
         this.options = !this.options;
+      },
+      toggleFocus(){
+        this.focused = !this.focused;
+        console.log(this.focused)
       },
     }
   };
