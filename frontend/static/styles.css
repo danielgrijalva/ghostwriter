@@ -45,10 +45,24 @@
     box-shadow: none;
   }
 
+  .btn-outline-gray {
+    color: #8d9194;
+    background-color: transparent;
+    background-image: none;
+    border-color: #ced4da;
+  }
+
+  .btn-outline-gray:hover {
+    color: #fff;
+    background-color: #8d9194;
+    border-color: #8d9194;
+  }
+
   .toggleOptions {
     color: #999;
     left: 0 !important;
     margin-left: 0 !important;
+    padding-top: 0;  
   }
 
   #app {
@@ -63,10 +77,6 @@
     transition: all 0.5s ease;
   }
 
-  #wrapper.toggled {
-    padding-left: 250px;
-  }
-
   #sidebar-wrapper {
     z-index: 1000;
     position: fixed;
@@ -75,6 +85,7 @@
     height: 100%;
     margin-left: -250px;
     overflow-y: auto;
+    overflow-x: hidden;
     background: #000;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
@@ -94,9 +105,23 @@
     padding: 15px;
   }
   
-  #wrapper.toggled #page-content-wrapper {
-    position: absolute;
-    margin-right: -250px;
+  #wrapper.toggled #toggleOptions {
+    margin-left: 250px;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;    
+  }
+
+  #toggleOptions {
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+  }
+
+  .ghostwriter {
+    position: relative;
   }
 
   .sidebar-nav {
@@ -106,9 +131,15 @@
     margin: 0;
     padding: 0;
     list-style: none;
+    overflow-x: hidden;
   }
   
   .sidebar-nav li {
     text-indent:0;
     padding: 20px;
+  }
+
+  hr {
+    border-bottom: 1px solid #999;
+    width: 75%;
   }
