@@ -5,18 +5,18 @@ import numpy as np
 import re
 from pprint import pprint
 
-def textgenrnn_sample(preds, top_n=3, random=False):
+def textgenrnn_sample(preds, top_n=3, random=False, temperature=1):
     '''
     Samples predicted probabilities of the next word.
     '''
 
     preds = np.asarray(preds).astype('float64')
-    preds = np.log(preds + K.epsilon())
+    preds = np.log(preds + K.epsilon()) / temperature
     exp_preds = np.exp(preds)
     preds = exp_preds / np.sum(exp_preds)
 
     if random:
-        index = np.random.randint(len(preds) + 1, size=top_n)
+        index = np.random.choice(a=len(preds), size=top_n, p=preds)
     else:
         index = (-preds).argsort()[:top_n]
 
@@ -28,7 +28,7 @@ def textgenrnn_sample(preds, top_n=3, random=False):
 
  
 def textgenrnn_generate(model, vocab, indices_char, maxlen, meta_token, 
-                        max_gen_length, random, top_n, story, next_word):
+                        max_gen_length, top_n, temperature, story, next_word):
     '''
     Generates and returns a single text.
     '''
@@ -48,10 +48,18 @@ def textgenrnn_generate(model, vocab, indices_char, maxlen, meta_token,
             maxlen
         )
 
+        if temperature == 0:
+            random = False
+            temperature = 1
+        else:
+            random = True
+
         # get indexes of top n options
         options_index = textgenrnn_sample(
             model.predict(encoded_text, batch_size=1)[0],
-            top_n=top_n
+            top_n=top_n,
+            random=random,
+            temperature=temperature
         )
 
         # get top n options from vocab using indexes

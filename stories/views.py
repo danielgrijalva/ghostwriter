@@ -12,14 +12,14 @@ def get_suggestions(request):
 
     next_word = request.query_params.get('nextWord')
     story = request.query_params.get('story')
-
+    
     if next_word == settings.META_TOKEN:
         return Response({'suggestions': None, 'story': story})
 
     params = {
         'max_gen_length': 280,
         'top_n': int(request.query_params.get('topN')),
-        'random': False,
+        'temperature': float(request.query_params.get('temp')),
         'story': story,
         'next_word': next_word,
     }

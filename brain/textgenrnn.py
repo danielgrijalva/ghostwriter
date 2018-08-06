@@ -45,15 +45,15 @@ class textgenrnn:
                                       weights_path=weights_path)
 
 
-    def generate(self, max_gen_length, random, top_n, story, next_word):
+    def generate(self, max_gen_length, top_n, temperature, story, next_word):
         gen_text = textgenrnn_generate(self.model,
                                         self.vocab,
                                         self.indices_char,
                                         self.config['max_length'],
                                         self.META_TOKEN,
                                         max_gen_length,
-                                        random,
                                         top_n,
+                                        temperature,
                                         story,
                                         next_word)
 
