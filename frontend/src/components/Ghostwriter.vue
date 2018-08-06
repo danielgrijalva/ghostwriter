@@ -9,14 +9,8 @@
         </div>
 
         <div class="col text-center">
-          <!-- <img class="img-fluid" width="200px" src="../assets/logo.png"> -->
+          <img class="img-fluid" width="200px" src="../assets/logo.png">
           <h1>Ghostwriter</h1>
-
-          <!-- story -->
-          <blockquote class="blockquote text-center">
-            <p v-model="story" class="mb-0">{{ story }}</p>
-            <footer v-if="story" class="blockquote-footer">{{ author }}</footer>
-          </blockquote>
 
           <!-- suggestions -->
           <div class="suggestions-container" v-if="suggestions">
@@ -36,9 +30,17 @@
               </ul>
             </div>
           </div>
+           
+          <div class="story">
+            <h3 v-model="story" class="text-left p-5">
+              {{ story }}
+            </h3> 
+          </div>
         </div>
       </div>
     </div>
+
+
     <div id="sidebar-wrapper">
       <ul class="sidebar-nav">
         <li>
@@ -47,9 +49,9 @@
         </li>
         <hr>
         <li>
-          <label for="topN">Change author</label>
-          <input @focus="toggleFocus" @blur="toggleFocus" type="text" v-model="author" class="form-control mb-2" id="author" placeholder="A Recurrent Neural Network">           
-        </li>
+          <label for="temp">Randomness ({{ tempShow }})</label>
+          <input type="range" v-model.lazy="temp" v-model="tempShow" v-on:change="getSuggestions" class="custom-range" min="0" max="5" value="0" step=".1">          
+        </li>        
       </ul>       
     </div>
   </div>
@@ -70,7 +72,8 @@
         suggestions: null,
         topN: 5,
         topNShow: 5,
-        author: 'A Recurrent Neural Network'
+        temp: 0,
+        tempShow: 0,
       };
     },
     created: function (){
@@ -89,6 +92,7 @@
           .get("http://127.0.0.1:8000/ghostwriter/", {
             params: {
               topN: this.topN,
+              temp: this.temp,
               nextWord: this.nextWord,
               story: this.rawStory
             }
