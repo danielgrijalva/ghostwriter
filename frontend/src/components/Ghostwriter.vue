@@ -1,58 +1,39 @@
 <template>
-  <div id="wrapper" v-bind:class="{ toggled: options }">
-    <div id="page-content-wrapper">
-      <div class="row ghostwriter">        
-        <div class="" id="toggleOptions">
-          <button class="btn btn-lg btn-link toggleOptions" v-on:click="toggleOptions">
-            <i class="fas fa-cog"></i>
-          </button>
-        </div>
+  <div>
+    <nav class="navbar navbar-dark bg-dark">
+      <button class="navbar-toggler pull-xs-right" id="navbarSideButton" v-on:click="toggleOptions" type="button">
+        &#9776;
+      </button>      
+      <a class="navbar-brand mx-auto" href="#"><h2 class="mb-1">Ghostwriter</h2></a>
 
-        <div class="col text-center">
-          <img class="img-fluid" width="200px" src="../assets/logo.png">
-          <h1>Ghostwriter</h1>
-
-          <!-- suggestions -->
-          <div class="suggestions-container" v-if="suggestions">
-            <div class="suggestions-results" aria-labelledby="autosuggest">
-              <ul role="listbox" aria-labelledby="autosuggest">
-                <li v-for="word in suggestions" v-on:click="buildStory(word)" class="suggestions-results-item">
-                  {{ word }}
-                </li>
-                <li>
-                  <div class="input-group m-2"  style="max-width: 97%;">
-                    <input @focus="toggleFocus" @blur="toggleFocus" type="text" class="form-control" v-model="customWord" placeholder="Other...">
-                    <div class="input-group-append">
-                      <button class="btn btn-outline-gray" type="button" v-on:click="buildStory(customWord)" id="button-addon2"><i class="fas fa-angle-right"></i></button>
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-           
-          <div class="story">
-            <h3 v-model="story" class="text-left p-5">
-              {{ story }}
-            </h3> 
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-    <div id="sidebar-wrapper">
-      <ul class="sidebar-nav">
-        <li>
+      <ul class="navbar-side" id="navbarSide" v-bind:class="{ reveal: options }">
+        <li class="navbar-side-item">
           <label for="topN">Number of suggestions ({{ topNShow }})</label>
           <input type="range" v-model.lazy="topN" v-model="topNShow" v-on:change="getSuggestions" class="custom-range" min="1" max="10" value="5" step="1">          
         </li>
-        <hr>
-        <li>
+        <hr class="separator">
+        <li class="navbar-side-item">
           <label for="temp">Randomness ({{ tempShow }})</label>
           <input type="range" v-model.lazy="temp" v-model="tempShow" v-on:change="getSuggestions" class="custom-range" min="0" max="5" value="0" step=".1">          
-        </li>        
-      </ul>       
+        </li>
+      </ul>
+      <div class="overlay" v-if="options" v-on:click="toggleOptions"></div>      
+    </nav>
+
+    <div class="row">
+      <div class="col suggestions">
+        <div class="list-group" v-if="suggestions">
+          <li class="list-group-item list-group-item-action" v-for="word in suggestions" v-on:click="buildStory(word)">
+            {{ word }}
+          </li>
+          <li class="list-group-item customWord">
+            <div class="input-group">
+              <input id="customWord" @focus="toggleFocus" @blur="toggleFocus" type="text" class="form-control" v-model="customWord" placeholder="Other...">
+            </div>
+          </li>          
+        </div>        
+      </div>
+      <div class="col"></div>
     </div>
   </div>
 </template>

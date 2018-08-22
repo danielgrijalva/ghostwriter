@@ -4,43 +4,18 @@
     margin-right: auto !important;
     overflow-x: hidden;
   }
+ 
+  .col {
+    padding-right: 0px !important;
+  }
 
-  .suggestions-container, .story {
-    position: relative;
-    margin: auto;
-    max-width: 500px;
+  .list-group-item {
+    cursor: pointer;
+    border-radius: 0 !important;    
   }
   
   .story {
     max-width: 800px;
-  }
-
-  .suggestions-results {
-    font-weight: 300;
-    margin: 0;
-    z-index: 10000001;
-    width: 100%;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    background: white;
-    padding: 0px;
-  }
-  
-  .suggestions-results ul {
-    list-style: none;
-    padding-left: 0;
-    margin: 0;
-  }
-  
-  .suggestions-results .suggestions-results-item {
-    cursor: pointer;
-    padding: 15px;
-  }
-  
-  .suggestions-results .suggestions-results-item:active,
-  .suggestions-results .suggestions-results-item:hover,
-  .suggestions-results .suggestions-results-item:focus {
-    background-color: #ddd;
   }
 
   .form-control:focus {
@@ -124,7 +99,6 @@
     transition: all 0.5s ease;
   }
 
-
   .sidebar-nav {
     position: absolute;
     top: 0;
@@ -140,7 +114,83 @@
     padding: 20px;
   }
 
-  hr {
+  .separator {
     border-bottom: 1px solid #999;
     width: 75%;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .custom-range {
+    width: 75%;
+  }
+
+  .bg-dark {
+    background-color: #2a2a2e !important;
+  }
+
+  #navbarSideButton {
+    position: fixed;
+  }
+
+  #customWord {
+    border: none;
+    padding: 0 !important;
+    text-align: center;
+  }
+
+  .customWord {
+    cursor: text !important;
+  }
+
+  .navbar-side {
+    height: 100%;
+    width: 25%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 0;
+    list-style: none;
+    background-color: #2a2a2e;
+    overflow-y: none;
+    z-index: 1000;
+    -webkit-transform: translateX(-100%);
+    -ms-transform: translateX(-100%);
+    transform: translateX(-100%);
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease; 
+  }
+
+  .navbar-side-item {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #ced4da;
+    padding: 2em;
+  }
+
+  .reveal {
+    -webkit-transform: translateX(0%);
+    -ms-transform: translateX(0%);
+    transform: translateX(0%);
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease; 
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    cursor: pointer;
+    background-color: #000;
+    opacity: 0.3;
+    z-index: 990;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease;    
   }
