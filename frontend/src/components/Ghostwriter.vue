@@ -27,7 +27,7 @@
           <li class="list-group-item list-group-item-action" v-for="word in suggestions" v-on:click="buildStory(word)">
             {{ word }}
           </li>
-          <li class="list-group-item customWord">
+          <li class="list-group-item p-0 customWord">
             <div class="input-group">
               <input id="customWord" @focus="toggleFocus" @blur="toggleFocus" type="text" class="form-control" v-model="customWord" placeholder="Or type here">
             </div>
@@ -36,12 +36,15 @@
       </div>
       <div class="col pl-0">
         <div class="list-group h-100">
-          <li class="list-group-item border-0 h-100 d-flex align-items-center justify-content-center">
-            <h3 class="mb-0">{{ story }}</h3>
+          <li class="list-group-item border-0 mr-3 h-100 d-flex align-items-center justify-content-center">
+            <h3 class="mb-0" v-if="story">{{ story }}</h3>
+            <h3 v-else class="text-black-50 mb-0">Compose...<span class="blinking-cursor">|</span></h3>
           </li>
-         <li class="list-group-item border-left-0 border-top-0 border-right-0">
-            Action buttons here
-          </li>       
+         <li class="list-group-item border-top-0 border-0" v-if="story">
+            <button title="Delete last word" type="button" class="btn btn-outline-dark btn-actions" v-on:click="removeWord()"><i class="fas fa-backspace"></i></button>
+            <button title="Restart" type="button" class="btn btn-outline-dark btn-actions" v-on:click="reset()"><i class="fas fa-redo-alt"></i></button>
+            <button title="Share" type="button" class="btn btn-outline-dark btn-actions"><i class="fab fa-twitter"></i></button>
+          </li>  
         </div>
       </div>
     </div>

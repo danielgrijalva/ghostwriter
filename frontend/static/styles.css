@@ -12,6 +12,7 @@
   .list-group-item {
     border-radius: 0 !important;
   }
+  
   .list-group-item-action {
     cursor: pointer;
   }
@@ -38,82 +39,8 @@
     border-color: #8d9194;
   }
 
-  .toggleOptions {
-    color: #999;
-    left: 0 !important;
-    margin-left: 0 !important;
-    padding-top: 0;
-    z-index: 1000000000000000002;
-  }
-
   #app {
     margin-top: 0 !important;
-  }
-
-  #wrapper {
-    padding-left: 0;
-    -webkit-transition: all 0.5s ease;
-    -moz-transition: all 0.5s ease;
-    -o-transition: all 0.5s ease;
-    transition: all 0.5s ease;
-  }
-
-  #sidebar-wrapper {
-    z-index: 1000;
-    position: fixed;
-    left: 250px;
-    width: 0;
-    height: 100%;
-    margin-left: -250px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    background: #000;
-    -webkit-transition: all 0.5s ease;
-    -moz-transition: all 0.5s ease;
-    -o-transition: all 0.5s ease;
-    transition: all 0.5s ease;
-    color: #999;
-    font-family: "Segoe UI";
-  }
-
-  #wrapper.toggled #sidebar-wrapper {
-    width: 250px;
-  }
-
-  #page-content-wrapper {
-    width: 100%;
-    position: absolute;
-    padding: 15px;
-  }
-  
-  #wrapper.toggled #toggleOptions {
-    margin-left: 250px;
-    -webkit-transition: all 0.5s ease;
-    -moz-transition: all 0.5s ease;
-    -o-transition: all 0.5s ease;
-    transition: all 0.5s ease;    
-  }
-
-  #toggleOptions {
-    -webkit-transition: all 0.5s ease;
-    -moz-transition: all 0.5s ease;
-    -o-transition: all 0.5s ease;
-    transition: all 0.5s ease;
-  }
-
-  .sidebar-nav {
-    position: absolute;
-    top: 0;
-    width: 250px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    overflow-x: hidden;
-  }
-  
-  .sidebar-nav li {
-    text-indent:0;
-    padding: 20px;
   }
 
   .separator {
@@ -137,7 +64,7 @@
 
   #customWord {
     border: none;
-    padding: 0 !important;
+    padding: .75rem 1.25rem;
     text-align: center;
   }
 
@@ -197,6 +124,69 @@
     transition: all 0.3s ease;    
   }
 
-  ::placeholder {
+  ::placeholder, .text-black-50{
     opacity: 0.6 !important;
+  }
+
+  .btn-actions {
+    color: #999;
+    font-weight: 600;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border: 2px solid #ccc;
+    border-radius: 19px;
+    width: 70px;
+  }
+
+  .blinking-cursor {
+    font-weight: 100;
+    -webkit-animation: 1s blink step-end infinite;
+    -moz-animation: 1s blink step-end infinite;
+    -ms-animation: 1s blink step-end infinite;
+    -o-animation: 1s blink step-end infinite;
+    animation: 1s blink step-end infinite;
+  }
+  
+  @keyframes "blink" {
+    from, to {
+      color: transparent;
+    }
+    50% {
+      color: rgba(0, 0, 0, 0.5);
+    }
+  }
+  
+  @-moz-keyframes blink {
+    from, to {
+      color: transparent;
+    }
+    50% {
+      color: rgba(0, 0, 0, 0.5);
+    }
+  }
+  
+  @-webkit-keyframes "blink" {
+    from, to {
+      color: transparent;
+    }
+    50% {
+      color: rgba(0, 0, 0, 0.5);
+    }
+  }
+  
+  @-ms-keyframes "blink" {
+    from, to {
+      color: transparent;
+    }
+    50% {
+      color: rgba(0, 0, 0, 0.5);
+    }
+  }
+  
+  @-o-keyframes "blink" {
+    from, to {
+      color: transparent;
+    }
+    50% {
+      color: rgba(0, 0, 0, 0.5);
+    }
   }
