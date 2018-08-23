@@ -16,6 +16,7 @@
           <label for="temp">Randomness ({{ tempShow }})</label>
           <input type="range" v-model.lazy="temp" v-model="tempShow" v-on:change="getSuggestions" class="custom-range" min="0" max="5" value="0" step=".1">          
         </li>
+        <hr class="separator">
       </ul>
       <div class="overlay" v-if="options" v-on:click="toggleOptions"></div>      
     </nav>
@@ -28,12 +29,21 @@
           </li>
           <li class="list-group-item customWord">
             <div class="input-group">
-              <input id="customWord" @focus="toggleFocus" @blur="toggleFocus" type="text" class="form-control" v-model="customWord" placeholder="Other...">
+              <input id="customWord" @focus="toggleFocus" @blur="toggleFocus" type="text" class="form-control" v-model="customWord" placeholder="Or type here">
             </div>
           </li>          
         </div>        
       </div>
-      <div class="col"></div>
+      <div class="col pl-0">
+        <div class="list-group h-100">
+          <li class="list-group-item border-0 h-100 d-flex align-items-center justify-content-center">
+            <h3 class="mb-0">{{ story }}</h3>
+          </li>
+         <li class="list-group-item border-left-0 border-top-0 border-right-0">
+            Action buttons here
+          </li>       
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -117,6 +127,7 @@
         this.nextWord = '';
         this.rawStory = '';
         this.story = '';
+        this.getSuggestions();
       },
       toggleOptions(){
         this.options = !this.options;
