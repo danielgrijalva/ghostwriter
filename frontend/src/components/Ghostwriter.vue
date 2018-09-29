@@ -1,144 +1,191 @@
 <template>
   <div>
-    <nav class="navbar navbar-dark bg-dark">
-      <button class="navbar-toggler pull-xs-right" id="navbarSideButton" v-on:click="toggleOptions" type="button">
-        &#9776;
-      </button>      
-      <a class="navbar-brand mx-auto" href="#"><h2 class="mb-1">Ghostwriter</h2></a>
-
-      <ul class="navbar-side" id="navbarSide" v-bind:class="{ reveal: options }">
-        <li class="navbar-side-item">
-          <label for="topN">Number of suggestions ({{ topNShow }})</label>
-          <input type="range" v-model.lazy="topN" v-model="topNShow" v-on:change="getSuggestions" class="custom-range" min="1" max="10" value="5" step="1">          
-        </li>
-        <hr class="separator">
-        <li class="navbar-side-item">
-          <label for="temp">Randomness ({{ tempShow }})</label>
-          <input type="range" v-model.lazy="temp" v-model="tempShow" v-on:change="getSuggestions" class="custom-range" min="0" max="5" value="0" step=".1">          
-        </li>
-        <hr class="separator">
-      </ul>
-      <div class="overlay" v-if="options" v-on:click="toggleOptions"></div>      
+    <nav class="navbar navbar-dark bg-dark">      
+      <a class="navbar-brand mx-auto" href="#"><h2 class="mb-1">Ghostwriter</h2></a>      
     </nav>
 
     <div class="row">
       <div class="col suggestions">
-        <div class="list-group" v-if="suggestions">
+        <div class="list-group xxx" v-if="suggestions">
           <li class="list-group-item list-group-item-action" v-for="word in suggestions" v-on:click="buildStory(word)">
             {{ word }}
           </li>
           <li class="list-group-item p-0 customWord">
             <div class="input-group">
-              <input id="customWord" @focus="toggleFocus" @blur="toggleFocus" type="text" class="form-control" v-model="customWord" placeholder="Or type here">
+              <input id="customWord" type="text" class="form-control" v-on:keydown.enter="buildStory(customWord)" v-model="customWord" placeholder="Or type here">
             </div>
           </li>          
-        </div>        
+        </div>
+        <div v-else class="list-group">
+          <li class="list-group-item list-group-item-action">
+            <vue-content-loading :height="10" :speed="1">
+              <rect x="15%" y="0%" rx="3" ry="3" width="70%" height="90%" />
+            </vue-content-loading>            
+          </li>
+          <li class="list-group-item list-group-item-action">
+            <vue-content-loading :height="10" :speed="1">
+              <rect x="18%" y="0%" rx="3" ry="3" width="63%" height="90%" />
+            </vue-content-loading>            
+          </li>          
+          <li class="list-group-item list-group-item-action">
+            <vue-content-loading :height="10" :speed="1">
+              <rect x="18%" y="0%" rx="3" ry="3" width="50%" height="90%" />
+            </vue-content-loading>            
+          </li>
+          <li class="list-group-item list-group-item-action">
+            <vue-content-loading :height="10" :speed="1">
+              <rect x="15%" y="0%" rx="3" ry="3" width="70%" height="90%" />
+            </vue-content-loading>            
+          </li>
+          <li class="list-group-item list-group-item-action">
+            <vue-content-loading :height="10" :speed="1">
+              <rect x="18%" y="0%" rx="3" ry="3" width="55%" height="90%" />
+            </vue-content-loading>            
+          </li>
+          <li class="list-group-item list-group-item-action">
+            <vue-content-loading :height="10" :speed="1">
+              <rect x="18%" y="0%" rx="3" ry="3" width="30%" height="90%" />
+            </vue-content-loading>            
+          </li>                                        
+        </div>
       </div>
+
       <div class="col pl-0">
         <div class="list-group h-100">
           <li class="list-group-item border-0 mr-3 h-100 d-flex align-items-center justify-content-center">
             <h3 class="mb-0" v-if="story">{{ story }}</h3>
-            <h3 v-else class="text-black-50 mb-0">Compose...<span class="blinking-cursor">|</span></h3>
+            <h3 v-else-if="suggestions" class="text-black-50 mb-0">Compose...<span class="blinking-cursor">|</span></h3>
+            <vcl-code v-else :height="120" :speed="1"></vcl-code>
           </li>
          <li class="list-group-item border-top-0 border-0" v-if="story">
             <button title="Delete last word" type="button" class="btn btn-outline-dark btn-actions" v-on:click="removeWord()"><i class="fas fa-backspace"></i></button>
-            <button title="Restart" type="button" class="btn btn-outline-dark btn-actions" v-on:click="reset()"><i class="fas fa-redo-alt"></i></button>
-            <button title="Share" type="button" class="btn btn-outline-dark btn-actions"><i class="fab fa-twitter"></i></button>
-          </li>  
+            <button title="Restart" type="button" class="btn btn-outline-dark btn-actions" v-on:click="reset()"><i class="fas fa-undo-alt"></i></button>
+            <button title="Finish here" type="button" class="btn btn-outline-dark btn-actions" v-on:click="finishStory()"><i class="fas fa-check-double"></i></button>
+             <button title="Share" type="button" class="btn btn-outline-dark btn-actions"><i class="fab fa-twitter"></i></button>
+          </li>
         </div>
       </div>
-    </div>
+    </div> 
   </div>
 </template>
 
 <script>
   import axios from "axios";
+  import { VueContentLoading, VclCode }  from 'vue-content-loading';
   export default {
     name: "Ghostwriter",
+    components: {
+      VueContentLoading,
+      VclCode,
+    },
     data() {
       return {
-        options: false,
-        focused: false,
         nextWord: '',
         customWord: '',
         story: '',
-        rawStory: '',
+        storyTokens: [],
         suggestions: null,
-        topN: 5,
-        topNShow: 5,
-        temp: 0,
-        tempShow: 0,
+        spacedPunctuation: [',', '.', '!', '?', ':', ';'],
+        notSpacedPunctuation: ["'", '’', '-', '–', '—'],
       };
     },
     created: function (){
-      var vm = this;
       this.getSuggestions();
-
-      window.addEventListener('keydown', function(event) {
-        if (event.keyCode == 8 && vm.story && vm.focused == false) { 
-          vm.removeWord();
-        }
-      });
     },
     methods: {
       getSuggestions() {
         axios
           .get("http://127.0.0.1:8000/ghostwriter/", {
             params: {
-              topN: this.topN,
-              temp: this.temp,
-              nextWord: this.nextWord,
-              story: this.rawStory
+              story: this.storyTokens.join(' '),
             }
           })
           .then(response => (this.suggestions = response.data.suggestions));
       },
       buildStory(word){
-        if (word != '<s>'){
-          this.nextWord = word;
-          // raw words and characters separated by spaces,
-          // used by the algorithm to do inference
-          this.rawStory = (this.rawStory + ' ' + word).trim();
-          this.getSuggestions();
+        // assert customWord/suggestion is clean
+        this.nextWord = word.trim().toLowerCase();
+        
+        // add clicked word to story tokens
+        this.storyTokens.push(this.nextWord);
 
-          // more human-readable story, for user presentation
-          // capitalize first letter, trim spaces between symbols, etc
-          this.formatStory();
-        } else {
-          // user selected META_TOKEN (<end> of string).
-          // META_TOKEN usually gets suggested when the story should end.
-          this.suggestions = null;
+        // calculate suggestions
+        this.getSuggestions();
+
+        // more human-readable story for the user
+        // e.g. capitalize first letter, trim spaces between punctuation, etc
+        this.formatStory(word);
+
+        // clear custom input
+        if (this.customWord){
+          this.clearInput();
         }
+        
       },
-      formatStory(){
-        this.story = this.rawStory[0].toUpperCase() + this.rawStory.substring(1);
+      formatStory(word){
+        if (this.storyTokens.length == 1){
+          // always capitalize first word
+          word = word[0].toUpperCase() + word.substring(1);
+          this.story = word + ' ';
+          
+        } else if (this.story.slice(-2) == '. '){
+          // capitalize word after a period
+          word = word[0].toUpperCase() + word.substring(1) + ' ';
+          this.story = this.story + word;
+
+        } else if (word == 'i'){
+          // capitalize "I" e.g. "I am"
+          word = word.toUpperCase() + ' ';
+          this.story = this.story + word;
+
+        } else if (this.notSpacedPunctuation.includes(word)){
+          // remove spaces between single quotes, hyphens and dashes
+          this.story = this.story.trim() + word;
+
+        } else if (this.spacedPunctuation.includes(word)) {
+          // add a space after question marks, periods, commas, colons, semicolons
+          this.story = this.story.trim() + word + ' ';
+
+        } else {
+          // add a space after every normal word
+          word = word + ' ';
+          this.story = this.story + word; 
+          
+        }
       },
       removeWord(){
-        var words = this.rawStory.split(' ');
-        words.pop();
+        // remove last word from tokens
+        this.storyTokens.pop();
 
-        if (words.length == 0) {
-          this.reset();
-        } else {
-          this.rawStory = words.join(' ');
-          this.formatStory();
+        // split story into words and punctuation
+        var words = this.story.split(/(,|\.|\!|\?|:|;|'|’|-|–|—)| /).filter(Boolean);
+
+        // removed word/punctuation
+        var lastWord = words.pop();
+
+        // remove lasWord from story
+        this.story = this.story.trim().replace(new RegExp(lastWord + '$'), '');
+
+        // add a space if lastWord was some punctuation mark
+        if (this.spacedPunctuation.includes(lastWord) || this.notSpacedPunctuation.includes(lastWord)){
+          this.story = this.story + ' ';
         }
 
+        // recalculate suggestions
         this.getSuggestions();
       },
       reset(){
         this.nextWord = '';
-        this.rawStory = '';
         this.story = '';
+        this.storyTokens = [];
         this.getSuggestions();
       },
-      toggleOptions(){
-        this.options = !this.options;
+      finishStory(){
+        this.suggestions = null;
       },
-      toggleFocus(){
-        this.focused = !this.focused;
-        console.log(this.focused)
-      },
+      clearInput(){
+        this.customWord = null;
+      }      
     }
   };
 </script>
