@@ -5,10 +5,10 @@
     </nav>
 
     <div class="row">
-      <div class="col suggestions">
-        <div class="list-group xxx" v-if="suggestions">
-          <li class="list-group-item list-group-item-action" v-for="word in suggestions" v-on:click="buildStory(word)">
-            {{ word }}
+      <div class="col">
+        <div class="list-group suggestions" v-if="suggestions">
+          <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" v-for="(word, index) of suggestions" v-on:click="buildStory(word)">
+            {{ word }} <span class="badge badge-secondary badge-pill">{{ probs[index] }}</span> 
           </li>
           <li class="list-group-item p-0 customWord">
             <div class="input-group">
@@ -16,7 +16,7 @@
             </div>
           </li>          
         </div>
-        <div v-else class="list-group">
+        <div v-else class="list-group suggestions">
           <li class="list-group-item list-group-item-action">
             <vue-content-loading :height="10" :speed="1">
               <rect x="15%" y="0%" rx="3" ry="3" width="70%" height="90%" />
@@ -85,6 +85,7 @@
         story: '',
         storyTokens: [],
         suggestions: null,
+        probs: null,
         spacedPunctuation: [',', '.', '!', '?', ':', ';'],
         notSpacedPunctuation: ["'", '’', '-', '–', '—'],
       };
@@ -100,7 +101,10 @@
               story: this.storyTokens.join(' '),
             }
           })
-          .then(response => (this.suggestions = response.data.suggestions));
+          .then(response => (
+            this.suggestions = response.data.suggestions,
+            this.probs = response.data.probs
+          ));
       },
       buildStory(word){
         // assert customWord/suggestion is clean
@@ -185,7 +189,7 @@
       },
       clearInput(){
         this.customWord = null;
-      }      
+      }   
     }
   };
 </script>

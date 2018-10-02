@@ -18,6 +18,6 @@ def get_suggestions(request):
         'story': story,
     }
 
-    suggestions = t.generate(**params)
+    suggestions, probs = t.generate(**params)
         
-    return Response({'suggestions': suggestions})
+    return Response({'suggestions': suggestions, 'probs': probs})
