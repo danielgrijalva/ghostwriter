@@ -5,7 +5,7 @@ import numpy as np
 import re
 from pprint import pprint
 
-def textgenrnn_sample(preds, top_n=3, temperature=1):
+def textgenrnn_sample(preds, top_n=10, temperature=1):
     '''
     Samples predicted probabilities of the next word.
     '''
@@ -16,12 +16,13 @@ def textgenrnn_sample(preds, top_n=3, temperature=1):
     preds = exp_preds / np.sum(exp_preds)
 
     index = (-preds).argsort()[:top_n]
+    probs = ['{:.0%}'.format(p) for p in preds[index][:top_n]]
 
     # avoid leaks by closing the session after making predictions
     # https://stackoverflow.com/a/50377181
     K.clear_session()
     
-    return index
+    return index, probs
 
  
 def textgenrnn_generate(model, vocab, indices_char, maxlen, 
@@ -46,7 +47,7 @@ def textgenrnn_generate(model, vocab, indices_char, maxlen,
         )
 
         # get indexes of top n options
-        options_index = textgenrnn_sample(
+        options_index, probs = textgenrnn_sample(
             model.predict(encoded_text, batch_size=1)[0],
             top_n=top_n,
         )
@@ -54,7 +55,7 @@ def textgenrnn_generate(model, vocab, indices_char, maxlen,
         # get top n options from vocab using indexes
         options = [indices_char[idx] for idx in options_index]
 
-        return options
+        return options, probs
 
 
 def textgenrnn_encode_sequence(text, vocab, maxlen):

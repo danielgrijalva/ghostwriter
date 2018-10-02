@@ -46,7 +46,7 @@ class textgenrnn:
 
 
     def generate(self, max_gen_length, top_n, story):
-        gen_text = textgenrnn_generate(self.model,
+        gen_text, probs = textgenrnn_generate(self.model,
                                         self.vocab,
                                         self.indices_char,
                                         self.config['max_length'],
@@ -54,4 +54,4 @@ class textgenrnn:
                                         max_gen_length,
                                         top_n,
                                         story)
-        return gen_text
+        return gen_text, probs
