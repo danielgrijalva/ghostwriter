@@ -4,34 +4,26 @@
     margin-left: auto !important;
     margin-right: auto !important;
     overflow-x: hidden;
-    min-width: 900px;
-    /* background-image: url("bg-2.jpg"); */
-
   }
 
-  /* @keyframes colorchange
-  {
-    0%   {background: #396afc;}
-    50% {background: #2948ff;}
-    100%   {background: #396afc;}
-
-  }
-
-  @-webkit-keyframes colorchange
-  {
-    0%   {background: #4A00E0;}
-    50% {background:#8E2DE2;}
-    100%   {background: #4A00E0;}
-  } */
-
-  .col {
-    padding-right: 0px !important;
-  }
-
-  .list-group-item {
-    border-radius: 0 !important;
+  .suggestions {
+    border-top-left-radius: 1.50em;
+    border-top-right-radius: 1.50em;  
+    border-bottom-left-radius: 1.50em;
+    border-bottom-right-radius: 1.50em;  
+    width: 500px;
   }
   
+  .list-group-item:first-child {
+    border-top-left-radius: 1.50em;
+    border-top-right-radius: 1.50em;
+  }
+
+  .list-group-item:last-child {
+    border-bottom-left-radius: 1.50em;
+    border-bottom-right-radius: 1.50em;  
+  }
+
   .list-group-item-action {
     cursor: pointer;
   }
@@ -40,46 +32,31 @@
     max-width: 800px;
   }
 
+  .form-control {
+    border-bottom-left-radius: 1.50em;
+    border-bottom-right-radius: 1.50em;  
+  }
+
   .form-control:focus {
     border-color: #ced4da;
     box-shadow: none;
   }
 
-  .btn-outline-gray {
-    color: #8d9194;
-    background-color: transparent;
-    background-image: none;
-    border-color: #ced4da;
-  }
-
-  .btn-outline-gray:hover {
-    color: #fff;
-    background-color: #8d9194;
-    border-color: #8d9194;
-  }
-
   #app {
     margin-top: 0 !important;
   }
-
-  .separator {
-    border-bottom: 1px solid #999;
-    width: 75%;
-    margin-top: 0;
-    margin-bottom: 0;
-  }
   
   .btn-actions {
-    color: #999;
+    color: rgb(190, 190, 190);
     font-weight: 600;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    border: 2px solid #ccc;
-    border-radius: 19px;
-    width: 70px;
+    border: 1px solid #ccc;
+    border-radius: 1.75em;
+    width: 100%;
   }
 
-  .bg-dark {
-    background-color: #2a2a2e !important;
+  .btn-group {
+    width: 500px;
   }
 
   #customWord {
@@ -92,12 +69,7 @@
     cursor: text !important;
   }
 
-  ::placeholder, .text-black-50{
-    opacity: 0.6 !important;
-  }
-
   .blinking-cursor {
-    font-weight: 100;
     -webkit-animation: 1s blink step-end infinite;
     -moz-animation: 1s blink step-end infinite;
     -ms-animation: 1s blink step-end infinite;
@@ -105,61 +77,40 @@
     animation: 1s blink step-end infinite;
   }
   
-  @keyframes "blink" {
-    from, to {
-      color: transparent;
-    }
-    50% {
-      color: rgba(0, 0, 0, 0.5);
-    }
+  .blinking-cursor-nosp {
+    margin-left: -5px;
   }
-  
-  @-moz-keyframes blink {
-    from, to {
-      color: transparent;
-    }
-    50% {
-      color: rgba(0, 0, 0, 0.5);
-    }
-  }
-  
-  @-webkit-keyframes "blink" {
-    from, to {
-      color: transparent;
-    }
-    50% {
-      color: rgba(0, 0, 0, 0.5);
-    }
-  }
-  
-  @-ms-keyframes "blink" {
-    from, to {
-      color: transparent;
-    }
-    50% {
-      color: rgba(0, 0, 0, 0.5);
-    }
-  }
-  
-  @-o-keyframes "blink" {
-    from, to {
-      color: transparent;
-    }
-    50% {
-      color: rgba(0, 0, 0, 0.5);
-    }
-  
 
-input:checked + .slider {
-  background-color: #2196F3;
+  .text-gray-50 {
+    color: rgba(73, 80, 87, .5) !important;
+  }
+  
+  @keyframes blink {
+    from, to {
+      color: transparent;
+    }
+    50% {
+      color: rgba(var(--color), 1);
+    }
+  }
+
+  @-webkit-keyframes blink {
+    from, to {
+      color: transparent;
+    }
+    50% {
+      color: rgba(var(--color), 1);
+    }
+  }
+
+::placeholder {
+  opacity: 0.5 !important;
 }
 
-input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .3s;
 }
 
-input:checked + .slider:before {
-  -webkit-transform: translateX(20px);
-  -ms-transform: translateX(20px);
-  transform: translateX(20px);
+.fade-enter, .fade-leave-to {
+  opacity: 0;
 }
