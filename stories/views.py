@@ -14,7 +14,7 @@ def get_suggestions(request):
 
     params = {
         'max_gen_length': 280,
-        'top_n': 10,
+        'top_n': 30,
         'story': story,
     }
 
