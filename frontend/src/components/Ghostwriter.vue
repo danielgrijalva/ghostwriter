@@ -28,11 +28,24 @@
     <div class="row">
       <div class="col d-flex justify-content-center">
         <transition name="fade">
-          <div class="list-group align-middle suggestions" v-if="suggestions">
-            <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" v-for="(word, index) of suggestions"
+          <div class="list-group suggestions-wrapper align-middle suggestions" ref="suggestions" v-if="suggestions">
+            <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" v-for="(word, index) of slicedSuggestions"
               v-on:click="buildStory(word)">
               {{ word }} <span class="badge badge-secondary badge-pill">{{ probs[index] }}</span>
             </li>
+            <infinite-loading @infinite="infiniteHandler" spinner="spiral" ref="inf" :distance="100">
+              <span slot="no-more">
+              </span>              
+            </infinite-loading>
+          </div>            
+        </transition>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col d-flex justify-content-center">
+        <transition name="fade">
+          <div class="list-group align-middle"  v-if="suggestions">           
             <li class="list-group-item p-0 customWord">
               <div class="input-group">
                 <input id="customWord" type="text" class="form-control" v-on:keydown.enter="buildStory(customWord)" v-model="customWord"
@@ -67,10 +80,12 @@
 <script>
 import axios from "axios";
 import { VclList } from "vue-content-loading";
+import InfiniteLoading from 'vue-infinite-loading';
 export default {
   name: "Ghostwriter",
   components: {
     VclList,
+    InfiniteLoading,
   },
   data() {
     return {
@@ -79,6 +94,7 @@ export default {
       story: "",
       storyTokens: [],
       suggestions: null,
+      slicedSuggestions: null,
       probs: null,
       spacedPunctuation: [",", ".", "!", "?", ":", ";"],
       notSpacedPunctuation: ["'", "’", "-", "–", "—"]
@@ -98,6 +114,7 @@ export default {
         .then(
           response => (
             (this.suggestions = response.data.suggestions),
+            (this.slicedSuggestions = this.suggestions.slice(0, 15)),
             (this.probs = response.data.probs)
           )
         );
@@ -115,6 +132,10 @@ export default {
       // more human-readable story for the user
       // e.g. capitalize first letter, trim spaces between punctuation, etc
       this.formatStory(word);
+
+      // avoid infinite-scroll bugs,
+      // move scrollbar to the top
+      this.$refs.suggestions.scrollTop = 0;
 
       // clear custom input
       if (this.customWord) {
@@ -183,7 +204,20 @@ export default {
     },
     clearInput() {
       this.customWord = null;
-    }
+    },
+    infiniteHandler($state) {
+      setTimeout(() => {
+        let len = this.slicedSuggestions.length;
+        if (len < this.suggestions.length){
+          let next = this.suggestions.slice(len, len + 5);
+          this.slicedSuggestions = this.slicedSuggestions.concat(next);
+          $state.loaded();
+        } else {
+          $state.complete();
+          $state.reset();
+        }
+      }, 1000);
+    },    
   }
 };
 </script>

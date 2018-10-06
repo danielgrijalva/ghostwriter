@@ -9,19 +9,18 @@
   .suggestions {
     border-top-left-radius: 1.50em;
     border-top-right-radius: 1.50em;  
-    border-bottom-left-radius: 1.50em;
-    border-bottom-right-radius: 1.50em;  
     width: 500px;
   }
   
+  .suggestions-wrapper {
+    height: 490px !important;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+
   .list-group-item:first-child {
     border-top-left-radius: 1.50em;
     border-top-right-radius: 1.50em;
-  }
-
-  .list-group-item:last-child {
-    border-bottom-left-radius: 1.50em;
-    border-bottom-right-radius: 1.50em;  
   }
 
   .list-group-item-action {
@@ -32,7 +31,7 @@
     max-width: 800px;
   }
 
-  .form-control {
+  .form-control, .input-group {
     border-bottom-left-radius: 1.50em;
     border-bottom-right-radius: 1.50em;  
   }
@@ -49,7 +48,7 @@
   .btn-actions {
     color: rgb(190, 190, 190);
     font-weight: 600;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Geneva, Verdana, sans-serif;
     border: 1px solid #ccc;
     border-radius: 1.75em;
     width: 100%;
@@ -67,6 +66,14 @@
 
   .customWord {
     cursor: text !important;
+    width: 500px;
+  }
+
+  .list-group-item.customWord {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 1.50em;
+    border-bottom-right-radius: 1.50em;
   }
 
   .blinking-cursor {
@@ -113,4 +120,9 @@
 
 .fade-enter, .fade-leave-to {
   opacity: 0;
+}
+
+.infinite-loading-container {
+  border-right: 1px solid rgba(0, 0, 0, .125);
+  border-left: 1px solid rgba(0, 0, 0, .125);
 }
