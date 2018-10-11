@@ -27,8 +27,8 @@
     cursor: pointer;
   }
   
-  .story {
-    max-width: 800px;
+  .story, h1 {
+    font-family: 'Product Sans';
   }
 
   .form-control, .input-group {
@@ -48,7 +48,6 @@
   .btn-actions {
     color: rgb(190, 190, 190);
     font-weight: 600;
-    font-family: 'Segoe UI', Geneva, Verdana, sans-serif;
     border: 1px solid #ccc;
     border-radius: 1.75em;
     width: 100%;
@@ -83,15 +82,11 @@
     -o-animation: 1s blink step-end infinite;
     animation: 1s blink step-end infinite;
   }
-  
-  .blinking-cursor-nosp {
-    margin-left: -5px;
+
+  .text-black-30 {
+    color: rgba(0, 0, 0, 0.3) !important;
   }
 
-  .text-gray-50 {
-    color: rgba(73, 80, 87, .5) !important;
-  }
-  
   @keyframes blink {
     from, to {
       color: transparent;
@@ -110,19 +105,31 @@
     }
   }
 
-::placeholder {
-  opacity: 0.5 !important;
+  @font-face {
+    font-family: 'Product Sans';
+    src: url(Product\ Sans\ Regular.ttf);
+  }
+
+  @media screen and (-webkit-min-device-pixel-ratio:0) {
+    /* CSS Statements that only apply on webkit-based browsers (Chrome, Safari, etc.) */
+    .list-group-item {
+      padding: 1.5em;
+    }
 }
 
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .3s;
-}
+  ::placeholder {
+    opacity: 0.5 !important;
+  }
 
-.fade-enter, .fade-leave-to {
-  opacity: 0;
-}
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .3s;
+  }
 
-.infinite-loading-container {
-  border-right: 1px solid rgba(0, 0, 0, .125);
-  border-left: 1px solid rgba(0, 0, 0, .125);
-}
+  .fade-enter, .fade-leave-to {
+    opacity: 0;
+  }
+
+  .infinite-loading-container {
+    border-right: 1px solid rgba(0, 0, 0, .125);
+    border-left: 1px solid rgba(0, 0, 0, .125);
+  }
