@@ -12,13 +12,13 @@
       </div>
     </div>  
 
-    <div class="row ml-auto mr-auto">
+    <div class="row story ml-auto mr-auto">
       <div class="col">
         <transition name="fade">
-          <h4 class="font-weight-light text-black-50 pb-5 pr-5 pl-5 mb-0" v-if="story">
+          <h4 class="font-weight-light text-black-30 pb-5 pr-5 pl-5 mb-0" v-if="story">
             {{ story }}<span class="blinking-cursor blinking-cursor-nosp">|</span>
           </h4>
-          <h4 v-else-if="suggestions" class="font-weight-light text-gray-50 pb-5 pr-5 pl-5 mb-0">
+          <h4 v-else-if="suggestions" class="font-weight-light text-black-30 pb-5 pr-5 pl-5 mb-0">
             Start writing...<span class="blinking-cursor">|</span>
           </h4>
         </transition>
@@ -29,9 +29,10 @@
       <div class="col d-flex justify-content-center">
         <transition name="fade">
           <div class="list-group suggestions-wrapper align-middle suggestions" ref="suggestions" v-if="suggestions">
-            <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" v-for="(word, index) of slicedSuggestions"
+            <li class="list-group-item list-group-item-action d-flex justify-content-center align-items-center" v-for="(word, index) of slicedSuggestions"
               v-on:click="buildStory(word)">
-              {{ word }} <span class="badge badge-secondary badge-pill">{{ probs[index] }}</span>
+              {{ word }} 
+              <!-- <span class="badge badge-secondary badge-pill">{{ probs[index] }}</span> -->
             </li>
             <infinite-loading @infinite="infiniteHandler" spinner="spiral" ref="inf" :distance="100">
               <span slot="no-more">
