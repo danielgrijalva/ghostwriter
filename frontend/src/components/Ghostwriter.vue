@@ -1,80 +1,92 @@
 <template>
   <div>
-    <div class="row ml-auto mr-auto">
-      <div class="col">
-        <h1 class="p-5 mb-0">Ghostwriter</h1>
-      </div>
-    </div>
-
-    <div class="row ml-auto mr-auto" v-if="!suggestions">
-      <div class="col ml-5 pl-5">
-        <vcl-list :height="160" :speed="1"></vcl-list>
-      </div>
-    </div>  
-
-    <div class="row story ml-auto mr-auto">
-      <div class="col">
-        <transition name="fade">
-          <h4 class="font-weight-light text-black-30 pb-5 pr-5 pl-5 mb-0" v-if="story">
-            {{ story }}<span class="blinking-cursor blinking-cursor-nosp">|</span>
-          </h4>
-          <h4 v-else-if="suggestions" class="font-weight-light text-black-30 pb-5 pr-5 pl-5 mb-0">
-            Start writing...<span class="blinking-cursor">|</span>
-          </h4>
-        </transition>
-      </div>
-    </div>  
-
-    <div class="row">
-      <div class="col d-flex justify-content-center">
-        <transition name="fade">
-          <div class="list-group suggestions-wrapper align-middle suggestions" ref="suggestions" v-if="suggestions">
-            <li class="list-group-item list-group-item-action d-flex justify-content-center align-items-center" v-for="(word, index) of slicedSuggestions"
-              v-on:click="buildStory(word)">
-              {{ word }} 
-              <!-- <span class="badge badge-secondary badge-pill">{{ probs[index] }}</span> -->
-            </li>
-            <infinite-loading @infinite="infiniteHandler" spinner="spiral" ref="inf" :distance="100">
-              <span slot="no-more">
-              </span>              
-            </infinite-loading>
-          </div>            
-        </transition>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col d-flex justify-content-center">
-        <transition name="fade">
-          <div class="list-group align-middle"  v-if="suggestions">           
-            <li class="list-group-item p-0 customWord">
-              <div class="input-group">
-                <input id="customWord" type="text" class="form-control" v-on:keydown.enter="buildStory(customWord)" v-model="customWord"
-                  placeholder="Or type here...">
-              </div>
-            </li>
-          </div>
-        </transition>
-      </div>
-    </div>
-
-    <transition name="fade">
-      <div class="row p-5" v-if="story">
-        <div class="col  d-flex justify-content-center">
-            <div class="btn-group" role="group">
-              <button type="button" class="btn p-2 btn-outline-secondary btn-actions" v-on:click="removeWord()">
-                <i class="fas fa-backspace"></i>
-              </button>
-              <button type="button" class="btn p-2 btn-outline-secondary btn-actions" v-on:click="reset()">
-                <i class="fas fa-redo"></i>
-              </button>
-              <button type="button" class="btn p-2 btn-outline-secondary btn-actions" v-on:click="finishStory()">
-                <i class="fas fa-check-double"></i>
-              </button>
-            </div>
+    <div class="main">
+      <div class="row ml-auto mr-auto">
+        <div class="col">
+          <h1 class="p-5 mb-0">Ghostwriter</h1>
         </div>
-      </div>      
-    </transition>
+      </div>
+
+      <div class="row ml-auto mr-auto" v-if="!suggestions">
+        <div class="col ml-5 pl-5">
+          <vcl-list :height="160" :speed="1"></vcl-list>
+        </div>
+      </div>  
+
+      <div class="row story ml-auto mr-auto">
+        <div class="col">
+          <transition name="fade">
+            <h3 class="font-weight-light text-black-30 pb-5 pt-0 pr-5 pl-5 mb-0" v-if="story">
+              {{ story }}<span class="blinking-cursor blinking-cursor-nosp">|</span>
+            </h3>
+            <h3 v-else-if="suggestions" class="font-weight-light text-black-30 pb-5 pt-0 pr-5 pl-5 mb-0">
+              Start writing...<span class="blinking-cursor">|</span>
+            </h3>
+          </transition>
+        </div>
+      </div>  
+
+      <div class="row">
+        <div class="col ml-3 mr-3 d-flex justify-content-center">
+          <transition name="fade">
+            <div class="list-group table-responsive mr-5 ml-5 align-middle suggestions" ref="suggestions" v-if="suggestions">
+              <li class="list-group-item list-group-item-action d-flex justify-content-center align-items-center" v-for="(word, index) of slicedSuggestions"
+                v-on:click="buildStory(word)">
+                {{ word }} 
+                <!-- <span class="badge badge-secondary badge-pill">{{ probs[index] }}</span> -->
+              </li>
+              <infinite-loading @infinite="infiniteHandler" spinner="spiral" ref="inf" :distance="110">
+                <span slot="no-more">
+                </span>              
+              </infinite-loading>
+            </div>            
+          </transition>
+        </div>
+      </div>
+
+      <div class="row pb-5">
+        <div class="col ml-3 mr-3 d-flex justify-content-center">
+          <transition name="fade">
+            <div class="list-group table-responsive mr-5 ml-5 align-middle customWord-wrapper"  v-if="suggestions">           
+              <li class="list-group-item p-0 d-flex justify-content-center align-items-center customWord ">
+                <div class="input-group">
+                  <input id="customWord" type="text" class="form-control" v-on:keydown.enter="buildStory(customWord)" v-model="customWord"
+                    placeholder="Or type here...">
+                </div>
+              </li>
+            </div>
+          </transition>
+        </div>
+      </div>
+
+      <transition name="fade">
+        <div class="row pb-5" v-if="story">
+          <div class="col d-flex justify-content-center">
+              <div class="btn-group table-responsive mr-5 ml-5 " role="group">
+                <button type="button" class="btn p-2 btn-outline-secondary btn-actions" v-on:click="removeWord()">
+                  <i class="fas fa-backspace"></i>
+                </button>
+                <button type="button" class="btn p-2 btn-outline-secondary btn-actions" v-on:click="reset()">
+                  <i class="fas fa-redo"></i>
+                </button>
+                <button type="button" class="btn p-2 btn-outline-secondary btn-actions" v-on:click="finishStory()">
+                  <i class="fas fa-check-double"></i>
+                </button>
+              </div>
+          </div>
+        </div>      
+      </transition>
+    </div>
+    <div class="section-2">
+      <div class="row ml-auto mr-auto">
+        <div class="col">
+          <h1 class="p-5 text-white mb-0">Ghostwriter</h1>
+          <p class="lead text-white">
+            A neural network that <em>empowers</em> the mind of amateur fiction writers by expanding their vocabulary
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
