@@ -9,13 +9,12 @@
   .suggestions {
     border-top-left-radius: 1.50em;
     border-top-right-radius: 1.50em;  
-    width: 500px;
-  }
-  
-  .suggestions-wrapper {
+    max-width:500px;
     height: 490px !important;
     overflow: auto;
     overscroll-behavior: contain;
+    font-weight: 300;
+    font-family: 'Roboto Slab', sans-serif;    
   }
 
   .list-group-item:first-child {
@@ -27,7 +26,7 @@
     cursor: pointer;
   }
   
-  .story, h1 {
+  .story, h1, h2, h3, h4 {
     font-family: 'Product Sans';
   }
 
@@ -61,11 +60,17 @@
     border: none;
     padding: .75rem 1.25rem;
     text-align: center;
+    font-weight: 300;
+    font-family: 'Roboto Slab', sans-serif;    
   }
 
-  .customWord {
+  .customWord-wrapper {
+    max-width: 500px;
+  }
+
+  .customWord{
     cursor: text !important;
-    width: 500px;
+    overflow: hidden;
   }
 
   .list-group-item.customWord {
@@ -133,3 +138,29 @@
     border-right: 1px solid rgba(0, 0, 0, .125);
     border-left: 1px solid rgba(0, 0, 0, .125);
   }
+
+  .main {
+    min-height: 100vh;
+  }
+
+  .section-2 {
+    min-height: 100vh;
+    background-color: #000;
+  }
+
+  .lead {
+    font-family: 'Roboto Slab';
+    font-weight: 300;
+  }
+
+  .bg-dynamic {
+    background: linear-gradient(230deg, #a24bcf, #4b79cf, #4bc5cf);
+    background-size: 300% 300%;
+    animation: MoveBG 60s ease infinite;
+  }
+
+  @keyframes MoveBG {
+    0%{background-position:0% 84%}
+    50%{background-position:100% 16%}
+    100%{background-position:0% 84%}
+}
