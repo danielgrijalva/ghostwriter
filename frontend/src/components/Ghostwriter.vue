@@ -88,7 +88,7 @@
       </div>
       <div class="row bg-dynamic p-5 ml-auto mr-auto" style="min-height: 33vh;">
         <div class="col-md-12 col-lg-6 align-self-center">
-          <img src="../assets/text3.svg" class="pt-5 pb-5 img-fluid" />
+          <img src="../assets/lstm-example.svg" class="pt-5 pb-5 img-fluid" />
         </div>
         <div class="col-md-12 col-lg-6 text-white align-self-center">
           <h3>Every word matters</h3>
