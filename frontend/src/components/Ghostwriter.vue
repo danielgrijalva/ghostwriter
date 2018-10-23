@@ -78,14 +78,32 @@
       </transition>
     </div>
     <div class="section-2">
-      <div class="row ml-auto mr-auto">
-        <div class="col">
-          <h1 class="p-5 text-white mb-0">Ghostwriter</h1>
+      <div class="row p-5 ml-auto mr-auto" style="min-height: 33vh;">
+        <div class="col align-self-center">
+          <h1 class="pb-5 text-white mb-0">Ghostwriter</h1>
           <p class="lead text-white">
-            A neural network that <em>empowers</em> the mind of amateur fiction writers by expanding their vocabulary
+            A neural network that <em>empowers</em> the creativity of amateur fiction writers by expanding their vocabulary
           </p>
         </div>
       </div>
+      <div class="row bg-dynamic p-5 ml-auto mr-auto" style="min-height: 33vh;">
+        <div class="col-md-12 col-lg-6 align-self-center">
+          <img src="../assets/text3.svg" class="pt-5 pb-5 img-fluid" />
+        </div>
+        <div class="col-md-12 col-lg-6 text-white align-self-center">
+          <h3>Every word matters</h3>
+          <p class="lead text-justify">
+            Contrarily to <em>markov chains</em> or <em>n-grams</em>, a <a class="text-white" href="https://en.wikipedia.org/wiki/Recurrent_neural_network#LSTM">recurrent neural network with long short-term memory</a> 
+            learns over time. Ghostwriter pays attention to full sentences from beginning to end, learns from their context,
+            and achieves human-level predictions for the next word.
+          </p>        
+        </div>        
+      </div>
+      <div class="row p-3 ml-auto mr-auto" style="min-height: 33vh;"> 
+        <div class="col align-self-center">
+          <h3 class="text-white mb-0">Inspiration</h3>
+        </div>      
+      </div>      
     </div>
   </div>
 </template>
