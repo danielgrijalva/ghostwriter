@@ -137,7 +137,7 @@ export default {
   methods: {
     getSuggestions() {
       axios
-        .get("http://127.0.0.1:8000/ghostwriter/", {
+        .get(process.env.API_URL+ "/ghostwriter/", {
           params: {
             story: this.storyTokens.join(" ")
           }
