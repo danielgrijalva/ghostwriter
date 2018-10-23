@@ -7,6 +7,7 @@ django-cors-headers==2.3.0
 djangorestframework==3.8.2
 gast==0.2.0
 grpcio==1.13.0
+gunicorn==19.9.0
 h5py==2.8.0
 idna==2.7
 Keras==2.1.5
@@ -32,3 +33,4 @@ tweepy==3.6.0
 Unidecode==1.0.22
 urllib3==1.23
 Werkzeug==0.14.1
+whitenoise==4.1
