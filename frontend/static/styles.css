@@ -149,7 +149,7 @@
   }
 
   .lead {
-    font-family: 'Roboto Slab';
+    font-family: 'Roboto';
     font-weight: 300;
   }
 
@@ -163,4 +163,4 @@
     0%{background-position:0% 84%}
     50%{background-position:100% 16%}
     100%{background-position:0% 84%}
-}
+  }
