@@ -11,7 +11,7 @@ h5py==2.8.0
 idna==2.7
 Keras==2.1.5
 Markdown==2.6.11
-numpy==1.14.5
+numpy==1.22.0
 oauthlib==2.1.0
 protobuf==3.6.0
 psycopg2==2.7.5
